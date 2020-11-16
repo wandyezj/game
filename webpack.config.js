@@ -57,6 +57,12 @@ module.exports = async (env, options) => {
           to:"robots.txt",
           from:"./src/robots.txt"
         },
+        {
+          to:"./pictures",
+          from:"./src/pictures/*",
+          flatten: true,
+        },
+        
       ]})
     ],
     devServer: {
