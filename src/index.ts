@@ -1,3 +1,6 @@
+/**
+ * class to figure out coordinates for drawing a grid of squares
+ */
 class CanvasGrid {
     private squareCoordinates: { x: number; y: number }[][];
     /**
@@ -37,8 +40,8 @@ class CanvasGrid {
         this.squareCoordinates = coordinates;
     }
 
-    square(x: number, y: number): { x: number; y: number } {
-        return this.squareCoordinates[x][y];
+    square(coordinates: { x: number; y: number }): { x: number; y: number } {
+        return this.squareCoordinates[coordinates.x][coordinates.y];
     }
 
     draw(context: CanvasRenderingContext2D) {
@@ -69,12 +72,12 @@ class Game {
         this.context.fillStyle = "black";
         this.context.fillRect(0, 0, this.width, this.height);
 
-        let start = 1;
-        for (let length of [1, 10, 100]) {
-            this.context.fillStyle = "blue";
-            this.context.fillRect(start, start, length, length);
-            start += length + 1;
-        }
+        // let start = 1;
+        // for (let length of [1, 10, 100]) {
+        //     this.context.fillStyle = "blue";
+        //     this.context.fillRect(start, start, length, length);
+        //     start += length + 1;
+        // }
 
         const separation = 1;
         const size = 36;
@@ -120,12 +123,143 @@ class Game {
             idY = idY + 1;
         }
 
-        const image = this.library.getBitmap(targetImage);
-        this.context.drawImage(image, 0, 0);
-
         this.context.fillStyle = "green";
-        const grid = new CanvasGrid(0, 0, 10, 10, 50, 1);
+        const count = 16;
+        const grid = new CanvasGrid(
+            offsetX,
+            offsetY,
+            count,
+            count,
+            size,
+            separation
+        );
         grid.draw(this.context);
+
+        let { x, y } = grid.square({ x: 0, y: 0 });
+        const image = this.library.getBitmap(targetImage);
+        this.context.drawImage(image, x, y);
+
+        const context = this.context;
+        context.save();
+        // right rectangles, rotate from rectangle center
+        // draw blue rect
+        context.fillStyle = "#0095DD";
+        context.fillRect(150, 30, 100, 100);
+
+        context.translate(200, 80); // translate to rectangle center
+        // x = x + 0.5 * width
+        // y = y + 0.5 * height
+        context.rotate((Math.PI / 180) * 25); // rotate
+        context.translate(-200, -80); // translate back
+
+        // draw grey rect
+        context.fillStyle = "#4D4E53";
+        context.fillRect(150, 30, 100, 100);
+        context.restore();
+
+        //this.context.rotate(45);
+
+        // default transformation (none)
+        //this.transform(1, 1, 0, 0, 0, 0);
+
+        //this.transform(1,1,)
+        //this.context.rotate(Math.PI /4);
+        // https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
+
+        //this.context.transform(1, 0.5, -0.5, 1, 30, 10)
+        const square = grid.square({ x: 1, y: 1 });
+        const centerX = square.x + image.width / 2;
+        const centerY = square.y + image.height / 2;
+        const degrees = 45;
+        this.context.save();
+        this.rotate({ x: centerX, y: centerY }, degrees);
+        this.drawImage(image, square);
+        this.context.restore();
+
+        const imageCenter = { x: image.width / 2, y: image.height / 2 };
+
+        this.drawImageAtPositionWithRotation(
+            image,
+            imageCenter,
+            grid.square({ x: 2, y: 2 }),
+            90
+        );
+
+        [
+            //{coordinates: {x:2, y:2}, degrees: 90},
+            { coordinates: { x: 3, y: 3 }, degrees: 135 },
+            { coordinates: { x: 4, y: 4 }, degrees: 270 },
+            { coordinates: { x: 5, y: 5 }, degrees: 315 },
+        ].forEach(({ coordinates, degrees }) => {
+            this.drawImageAtPositionWithRotation(
+                image,
+                imageCenter,
+                grid.square(coordinates),
+                degrees
+            );
+        });
+    }
+
+    drawImageAtPositionWithRotation(
+        image: ImageBitmap,
+        imageCenter: { x: number; y: number },
+        position: { x: number; y: number },
+        degrees: number
+    ) {
+        this.context.save();
+        const centerX = position.x + imageCenter.x;
+        const centerY = position.y + imageCenter.y;
+        const center = { x: centerX, y: centerY };
+
+        this.rotate(center, degrees);
+        this.drawImage(image, position);
+        this.context.restore();
+    }
+
+    /**
+     * rotates around a center point
+     * @param centerX
+     * @param centerY
+     * @param degrees
+     */
+    rotate(center: { x: number; y: number }, degrees: number) {
+        const radians = (Math.PI / 180) * (degrees % 360);
+        this.context.translate(center.x, center.y);
+        this.context.rotate(radians);
+        this.context.translate(0 - center.x, 0 - center.y);
+    }
+
+    drawImage(image: ImageBitmap, coordinates: { x: number; y: number }) {
+        const { x, y } = coordinates;
+        this.context.drawImage(image, x, y);
+    }
+
+    transform(
+        horizontalScaling: number,
+        verticalScaling: number,
+
+        horizontalSkewing: number,
+        verticalSkewing: number,
+
+        horizontalMoving: number,
+        verticalMoving: number
+    ) {
+        /*
+        Parameter   Description
+        a           Horizontal scaling	
+        b           Horizontal skewing	
+        c           Vertical skewing	
+        d           Vertical scaling	
+        e           Horizontal moving	
+        f           Vertical moving
+        */
+        const a = horizontalScaling;
+        const b = horizontalSkewing;
+        const c = verticalSkewing;
+        const d = verticalScaling;
+        const e = horizontalMoving;
+        const f = verticalMoving;
+        this.context.transform(a, b, c, d, e, f);
     }
 }
 
