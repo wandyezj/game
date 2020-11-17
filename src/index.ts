@@ -1,3 +1,56 @@
+class CanvasGrid {
+    private squareCoordinates: { x: number; y: number }[][];
+    /**
+     *
+     * @param x upper left
+     * @param y upper right
+     * @param countX squares in x
+     * @param countY squares in y
+     * @param size of squares
+     * @param separation distance between squares
+     */
+    constructor(
+        private topLeftX: number,
+        private topLeftY: number,
+        private countX: number,
+        private countY: number,
+        private size: number,
+        private separation: number
+    ) {
+        const coordinates = [];
+
+        let coordinateX = this.topLeftX;
+        for (let x = 0; x < this.countX; x++) {
+            const column = [];
+
+            let coordinateY = this.topLeftY;
+            for (let y = 0; y < this.countY; y++) {
+                column.push({ x: coordinateX, y: coordinateY });
+
+                coordinateY += this.size + this.separation;
+            }
+            coordinates.push(column);
+
+            coordinateX += this.size + this.separation;
+        }
+
+        this.squareCoordinates = coordinates;
+    }
+
+    square(x: number, y: number): { x: number; y: number } {
+        return this.squareCoordinates[x][y];
+    }
+
+    draw(context: CanvasRenderingContext2D) {
+        this.squareCoordinates.forEach((column) => {
+            column.forEach((square) => {
+                const { x, y } = square;
+                context.fillRect(x, y, this.size, this.size);
+            });
+        });
+    }
+}
+
 class Game {
     private width: number = 600;
     private height: number = 600;
@@ -67,8 +120,12 @@ class Game {
             idY = idY + 1;
         }
 
-        const image = library.getBitmap(targetImage);
+        const image = this.library.getBitmap(targetImage);
         this.context.drawImage(image, 0, 0);
+
+        this.context.fillStyle = "green";
+        const grid = new CanvasGrid(0, 0, 10, 10, 50, 1);
+        grid.draw(this.context);
     }
 }
 
@@ -101,7 +158,7 @@ class ImageLibrary {
 let game: Game;
 let library = new ImageLibrary();
 
-const targetImage = "./pictures/target36.png";
+const targetImage = "./pictures/target36transparent.png";
 
 document.onload = () => {
     console.log("document onload");
