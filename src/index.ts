@@ -1,3 +1,6 @@
+import { off } from "process";
+import { runInThisContext } from "vm";
+
 /**
  * class to figure out coordinates for drawing a grid of squares
  */
@@ -200,6 +203,48 @@ class Game {
         });
     }
 
+    /**
+     * where it was clicked
+     * @param x
+     * @param y
+     */
+    click(x: number, y: number) {
+        // technically should only pass if within the bounding rect of the game
+        // if (x >= 0 && y >= 0 && x <= canvas.width && y <= canvas.height) {
+        //     console.log("game canvas click")
+        //     game.click(x, y);
+        // } else {
+        //     console.log(`${x} ${y} not in 0 0 ${canvas.width} ${canvas.height}`);
+        // }
+
+        // Translate to canvas coordinates
+        const rect = this.canvas.getBoundingClientRect();
+        const offsetX = rect.x;
+        const offsetY = rect.y;
+
+        const canvasX = x - offsetX;
+        const canvasY = y - offsetY;
+
+        // check if inside canvas
+        if (
+            canvasX > 0 &&
+            canvasY > 0
+            // && canvasX < this.canvas.width
+            // && canvasY < this.canvas.height
+        ) {
+            this.clickCanvas(canvasX, canvasY);
+        } else {
+            console.log("click no in canvas");
+        }
+    }
+
+    private clickCanvas(x: number, y: number) {
+        this.context.fillStyle = "red";
+        const size = 10;
+        const offset = size / 2;
+        this.context.fillRect(x - offset, y - offset, size, size);
+    }
+
     drawImageAtPositionWithRotation(
         image: ImageBitmap,
         imageCenter: { x: number; y: number },
@@ -306,9 +351,36 @@ document.body.onload = () => {
 export async function start() {
     console.log("start");
     const canvas = document.getElementById("game") as HTMLCanvasElement;
+    // const rect = canvas.getBoundingClientRect();
+    // const offsetX = rect.x;
+    // const offsetY = rect.y;
+
     await library.load(targetImage);
     game = new Game(canvas, library);
     game.draw();
+
+    window.addEventListener("click", function (e) {
+        // event reports general screen coordinates
+        // translate general coordinates to the canvas coordinates
+        // The upper Right corner of the canvas in screen coordinates
+
+        // const x = e.pageX - offsetX;
+        // const y = e.pageY - offsetY;
+
+        const x = e.pageX;
+        const y = e.pageY;
+
+        console.log(`${x} ${y}`);
+        game.click(x, y);
+
+        // // technically should only pass if within the bounding rect of the game
+        // if (x >= 0 && y >= 0 && x <= canvas.width && y <= canvas.height) {
+        //     console.log("game canvas click")
+        //     game.click(x, y);
+        // } else {
+        //     console.log(`${x} ${y} not in 0 0 ${canvas.width} ${canvas.height}`);
+        // }
+    });
 }
 
 async function loadImage(src: string): Promise<HTMLImageElement> {
@@ -319,7 +391,6 @@ async function loadImage(src: string): Promise<HTMLImageElement> {
 
     const image = new Image();
     image.onload = (event) => {
-        debugger;
         resolvePromise(image);
     };
     image.src = src;
