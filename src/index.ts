@@ -228,17 +228,18 @@ class Game {
         // check if inside canvas
         if (
             canvasX > 0 &&
-            canvasY > 0
-            // && canvasX < this.canvas.width
-            // && canvasY < this.canvas.height
+            canvasY > 0 &&
+            canvasX < this.width &&
+            canvasY < this.height
         ) {
             this.clickCanvas(canvasX, canvasY);
         } else {
-            console.log("click no in canvas");
+            console.log("click not in canvas");
         }
     }
 
     private clickCanvas(x: number, y: number) {
+        // create a red square centered on where the board was clicked
         this.context.fillStyle = "red";
         const size = 10;
         const offset = size / 2;
