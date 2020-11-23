@@ -1,11 +1,65 @@
 import { off } from "process";
 import { runInThisContext } from "vm";
 
+interface Coordinate {
+    x: number;
+    y: number;
+}
+
+type Callback = () => void;
+type InsideCoordinateCallback = (coordinate: Coordinate) => boolean;
+
+class CanvasClick {
+    private tests: {
+        id: string;
+        test: InsideCoordinateCallback;
+        callback: Callback;
+    }[] = [];
+
+    add(id: string, test: InsideCoordinateCallback, callback: Callback) {
+        this.tests.push({
+            id,
+            test,
+            callback,
+        });
+    }
+
+    addSquare(
+        id: string,
+        upperLeftCoordinate: Coordinate,
+        size: number,
+        callback: Callback
+    ) {
+        const test = (coordinate: Coordinate) => {
+            const { x, y } = coordinate;
+            const lowerY = upperLeftCoordinate.y;
+            const upperY = lowerY + size;
+            const lowerX = upperLeftCoordinate.x;
+            const upperX = lowerX + size;
+
+            // test that it is within the bounds of the rectangle
+            const insideBounds =
+                x >= lowerX && x <= upperX && y >= lowerY && y <= upperY;
+
+            return insideBounds;
+        };
+        this.add(id, test, callback);
+    }
+
+    click(coordinate: Coordinate) {
+        this.tests.forEach(({ test, callback }) => {
+            if (test(coordinate)) {
+                callback();
+            }
+        });
+    }
+}
+
 /**
  * class to figure out coordinates for drawing a grid of squares
  */
 class CanvasGrid {
-    private squareCoordinates: { x: number; y: number }[][];
+    private squareCoordinates: Coordinate[][];
     /**
      *
      * @param x upper left
@@ -43,8 +97,22 @@ class CanvasGrid {
         this.squareCoordinates = coordinates;
     }
 
-    square(coordinates: { x: number; y: number }): { x: number; y: number } {
+    /**
+     * Square Coordinates to Canvas Coordinates
+     * @param coordinates
+     */
+    square(coordinates: Coordinate): Coordinate {
         return this.squareCoordinates[coordinates.x][coordinates.y];
+    }
+
+    /**
+     * Canvas Coordinate to Square Coordinate
+     * finds where the canvas coordinate hits a square coordinate
+     * @returns undefined if no square is intersected
+     * @param coordinates
+     */
+    canvasToSquare(coordinates: Coordinate): Coordinate | undefined {
+        return undefined;
     }
 
     draw(context: CanvasRenderingContext2D) {
@@ -61,6 +129,7 @@ class Game {
     private width: number = 600;
     private height: number = 600;
     private context: CanvasRenderingContext2D;
+    private clickAreas: CanvasClick = new CanvasClick();
     constructor(
         private canvas: HTMLCanvasElement,
         private library: ImageLibrary
@@ -138,11 +207,19 @@ class Game {
         );
         grid.draw(this.context);
 
+        const context = this.context;
+        const firstSquare = grid.square({ x: 0, y: 0 });
+        this.clickAreas.addSquare("square_0-0", firstSquare, size, () => {
+            const { x, y } = firstSquare;
+            // Make this a random color to make it more interactive
+            context.fillStyle = "orange";
+            context.fillRect(x, y, size, size);
+        });
+
         let { x, y } = grid.square({ x: 0, y: 0 });
         const image = this.library.getBitmap(targetImage);
         this.context.drawImage(image, x, y);
 
-        const context = this.context;
         context.save();
         // right rectangles, rotate from rectangle center
         // draw blue rect
@@ -244,6 +321,9 @@ class Game {
         const size = 10;
         const offset = size / 2;
         this.context.fillRect(x - offset, y - offset, size, size);
+
+        // Click the Click Areas
+        this.clickAreas.click({ x, y });
     }
 
     drawImageAtPositionWithRotation(
