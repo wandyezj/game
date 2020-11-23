@@ -1,5 +1,5 @@
-import { off } from "process";
-import { runInThisContext } from "vm";
+import { getRandomNamedColor } from "./utility/getRandomNamedColor";
+import { getRandomHexColor } from "./utility/getRandomHexColor";
 
 interface Coordinate {
     x: number;
@@ -64,17 +64,17 @@ class CanvasGrid {
      *
      * @param x upper left
      * @param y upper right
-     * @param countX squares in x
-     * @param countY squares in y
-     * @param size of squares
+     * @param countX number of squares in x
+     * @param countY number of squares in y
+     * @param squareSize height and width of each square
      * @param separation distance between squares
      */
     constructor(
         private topLeftX: number,
         private topLeftY: number,
-        private countX: number,
-        private countY: number,
-        private size: number,
+        public countX: number,
+        public countY: number,
+        public squareSize: number,
         private separation: number
     ) {
         const coordinates = [];
@@ -87,14 +87,18 @@ class CanvasGrid {
             for (let y = 0; y < this.countY; y++) {
                 column.push({ x: coordinateX, y: coordinateY });
 
-                coordinateY += this.size + this.separation;
+                coordinateY += this.squareSize + this.separation;
             }
             coordinates.push(column);
 
-            coordinateX += this.size + this.separation;
+            coordinateX += this.squareSize + this.separation;
         }
 
         this.squareCoordinates = coordinates;
+    }
+
+    public get squares(): Coordinate[] {
+        return this.squareCoordinates.flat(1);
     }
 
     /**
@@ -119,7 +123,7 @@ class CanvasGrid {
         this.squareCoordinates.forEach((column) => {
             column.forEach((square) => {
                 const { x, y } = square;
-                context.fillRect(x, y, this.size, this.size);
+                context.fillRect(x, y, this.squareSize, this.squareSize);
             });
         });
     }
@@ -212,9 +216,32 @@ class Game {
         this.clickAreas.addSquare("square_0-0", firstSquare, size, () => {
             const { x, y } = firstSquare;
             // Make this a random color to make it more interactive
-            context.fillStyle = "orange";
+            const color = getRandomHexColor();
+            console.log(color);
+            context.fillStyle = color;
             context.fillRect(x, y, size, size);
         });
+
+        // Register Every Square with a Callback
+        for (let x = 0; x < grid.countX; x++) {
+            for (let y = 0; y < grid.countY; y++) {
+                const area = grid.square({ x, y });
+                const squareSize = grid.squareSize;
+                const callback = () => {
+                    console.log(`${x} ${y}`);
+                    const color = getRandomNamedColor();
+                    console.log(color);
+                    context.fillStyle = color;
+                    context.fillRect(area.x, area.y, squareSize, squareSize);
+                };
+                this.clickAreas.addSquare(
+                    `square_${x}_${y}`,
+                    area,
+                    squareSize,
+                    callback
+                );
+            }
+        }
 
         let { x, y } = grid.square({ x: 0, y: 0 });
         const image = this.library.getBitmap(targetImage);
