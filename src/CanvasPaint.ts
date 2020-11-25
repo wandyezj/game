@@ -1,4 +1,5 @@
 import { Coordinate } from "./Coordinate";
+import { degreesToRadians } from "./utility/degreesToRadians";
 
 /**
  * Class to control drawing on the canvas
@@ -50,7 +51,10 @@ export class CanvasPaint {
             ];
 
             points.forEach(([coordinate, color]) => {
-                CanvasPaint.circle(context, coordinate, point, { color, fill: true });
+                CanvasPaint.circle(context, coordinate, point, {
+                    color,
+                    fill: true,
+                });
             });
             // this.drawCircle(tip, point, {fill: "white"});
             // this.drawCircle(right, point, {fill: "red"});
@@ -67,15 +71,7 @@ export class CanvasPaint {
         const { color, fill } = options;
 
         context.beginPath();
-        context.ellipse(
-            center.x,
-            center.y,
-            radius,
-            radius,
-            0,
-            0,
-            Math.PI * 2
-        );
+        context.ellipse(center.x, center.y, radius, radius, 0, 0, Math.PI * 2);
         if (color) {
             context.strokeStyle = color;
             context.fillStyle = color;
@@ -111,9 +107,12 @@ export class CanvasPaint {
      * @param centerY
      * @param degrees
      */
-    static rotate(context: CanvasRenderingContext2D, center: { x: number; y: number }, degrees: number) {
-
-        const radians = (Math.PI / 180) * (degrees % 360);
+    static rotate(
+        context: CanvasRenderingContext2D,
+        center: { x: number; y: number },
+        degrees: number
+    ) {
+        const radians = degreesToRadians(degrees);
         context.translate(center.x, center.y);
         context.rotate(radians);
         context.translate(0 - center.x, 0 - center.y);

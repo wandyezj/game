@@ -16,8 +16,7 @@ document.body.onload = () => {
 
 let gameRefreshInterval: any;
 
-
-async function gameTick(){
+async function gameTick() {
     game.tick();
 }
 
@@ -57,6 +56,4 @@ export async function start() {
         //     console.log(`${x} ${y} not in 0 0 ${canvas.width} ${canvas.height}`);
         // }
     });
-
-
 }

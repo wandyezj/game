@@ -66,7 +66,7 @@ export class Game {
 
     // Update Tick
     tick() {
-        console.log("tick")
+        console.log("tick");
         this.draw();
     }
 
@@ -81,9 +81,6 @@ export class Game {
         context.fillRect(0, 0, this.width, this.height);
 
         this.engine.draw(context);
-
-
-
 
         // // Draw all squares in the grid
         // this.context.fillStyle = "green";
@@ -107,7 +104,7 @@ export class Game {
                 const area = grid.square({ x, y });
                 const squareSize = grid.squareSize;
                 const callback = () => {
-                    this.engine.moveArrowTo({x, y})
+                    this.engine.moveArrowTo({ x, y });
                     console.log(`${x} ${y}`);
                     const color = getRandomNamedColor();
                     console.log(color);
