@@ -4,21 +4,20 @@ import { Coordinate } from "./Coordinate";
  * Class to control drawing on the canvas
  */
 export class CanvasPaint {
-    constructor(private context: CanvasRenderingContext2D){
+    constructor(private context: CanvasRenderingContext2D) {}
 
-    }
-
-    arrow(center:Coordinate, height: number, options:{circleColor?: string, lightsOn?: boolean} = {}) {
-        const {circleColor, lightsOn} = options;
+    arrow(
+        center: Coordinate,
+        height: number,
+        options: { circleColor?: string; lightsOn?: boolean } = {}
+    ) {
+        const { circleColor, lightsOn } = options;
         const width = height / 2;
-        
 
-        const tip =  {x: center.x, y:center.y - height /2};
-        const right = {x: tip.x -width / 2, y: tip.y + height};
-        const left = {x: tip.x + width / 2, y: tip.y + height};
+        const tip = { x: center.x, y: center.y - height / 2 };
+        const right = { x: tip.x - width / 2, y: tip.y + height };
+        const left = { x: tip.x + width / 2, y: tip.y + height };
 
-
-                
         // how wide should the circle be based on the center?
 
         this.context.beginPath();
@@ -30,39 +29,51 @@ export class CanvasPaint {
         this.context.lineTo(tip.x, tip.y);
         this.context.lineTo(right.x, right.y);
         // right -> tip -> left
-        this.context.arcTo(tip.x, tip.y, left.x, left.y, height /4);
+        this.context.arcTo(tip.x, tip.y, left.x, left.y, height / 4);
         // need to draw the line
         this.context.stroke();
 
         // Center Circle
         this.context.lineWidth = 2;
-        this.circle(center, 6, {color:circleColor});
+        this.circle(center, 6, { color: circleColor });
 
         // debug
         if (lightsOn) {
-
             this.context.lineWidth = 1;
             const point = 1;
             // https://en.wikipedia.org/wiki/Navigation_light
-            const points: [Coordinate, string][] = [[tip, "white"], [right, "red"], [left, "lime"]]
-            
+            const points: [Coordinate, string][] = [
+                [tip, "white"],
+                [right, "red"],
+                [left, "lime"],
+            ];
+
             points.forEach(([coordinate, color]) => {
-                this.circle(coordinate, point, {color, fill: true} )
+                this.circle(coordinate, point, { color, fill: true });
             });
             // this.drawCircle(tip, point, {fill: "white"});
             // this.drawCircle(right, point, {fill: "red"});
             // this.drawCircle(left, point, {fill: "lime"});
         }
-
     }
-    
 
-    circle(center:Coordinate, radius: number, options: {color?: string, fill?: boolean} ={} ) {
-        
-        const {color, fill} = options;
+    circle(
+        center: Coordinate,
+        radius: number,
+        options: { color?: string; fill?: boolean } = {}
+    ) {
+        const { color, fill } = options;
 
         this.context.beginPath();
-        this.context.ellipse(center.x, center.y, radius, radius, 0, 0, Math.PI * 2);
+        this.context.ellipse(
+            center.x,
+            center.y,
+            radius,
+            radius,
+            0,
+            0,
+            Math.PI * 2
+        );
         if (color) {
             this.context.strokeStyle = color;
             this.context.fillStyle = color;
@@ -74,7 +85,6 @@ export class CanvasPaint {
             this.context.stroke();
         }
     }
-
 
     imageAtPositionWithRotation(
         image: ImageBitmap,

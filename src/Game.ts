@@ -15,7 +15,7 @@ export class Game {
 
     private paint: CanvasPaint;
     private grid: CanvasGrid;
- 
+
     constructor(
         private canvas: HTMLCanvasElement,
         private library: ImageLibrary
@@ -26,7 +26,7 @@ export class Game {
         this.paint = new CanvasPaint(this.context);
     }
 
-        /**
+    /**
      * Things that should happen once
      */
     setup() {
@@ -38,7 +38,7 @@ export class Game {
         const separation = 1;
         const size = 36;
         const border = 1;
-        
+
         const count = 16;
 
         function centeredOffset(
@@ -57,14 +57,7 @@ export class Game {
         const offsetX = centeredOffset(this.width, border, size, separation);
         const offsetY = centeredOffset(this.height, border, size, separation);
 
-        return new CanvasGrid(
-            offsetX,
-            offsetY,
-            count,
-            count,
-            size,
-            separation
-        );
+        return new CanvasGrid(offsetX, offsetY, count, count, size, separation);
     }
 
     /**
@@ -75,16 +68,21 @@ export class Game {
         this.context.fillStyle = "black";
         this.context.fillRect(0, 0, this.width, this.height);
 
-       // Draw all squares in the grid
+        // Draw all squares in the grid
         this.context.fillStyle = "green";
         this.grid.draw(this.context);
 
-        this.paint.arrow(this.grid.squareCenter({x:5, y:6}), this.grid.squareSize / 1.3, {circleColor: "pink", lightsOn: true});
+        this.paint.arrow(
+            this.grid.squareCenter({ x: 5, y: 6 }),
+            this.grid.squareSize / 1.3,
+            { circleColor: "pink", lightsOn: true }
+        );
     }
 
-
-
-    private registerSquareCallbacks(grid: CanvasGrid, context: CanvasRenderingContext2D) {
+    private registerSquareCallbacks(
+        grid: CanvasGrid,
+        context: CanvasRenderingContext2D
+    ) {
         // Register Every Square with a Callback
         for (let x = 0; x < grid.countX; x++) {
             for (let y = 0; y < grid.countY; y++) {
@@ -153,8 +151,6 @@ export class Game {
         this.clickAreas.click({ x, y });
     }
 
-
-
     // EXAMPLES
 
     private exampleSizes() {
@@ -164,7 +160,6 @@ export class Game {
             this.context.fillRect(start, start, length, length);
             start += length + 1;
         }
-
     }
 
     private exampleDrawGrid() {
@@ -172,7 +167,7 @@ export class Game {
         const offsetY = 0;
 
         const squareSize = 10;
-        const separation =2;
+        const separation = 2;
         const step = squareSize + separation;
 
         let idX = 0;
@@ -198,7 +193,6 @@ export class Game {
         }
     }
 
-    
     private exampleImageRotation(grid: CanvasGrid) {
         let { x, y } = grid.square({ x: 0, y: 0 });
         const image = this.library.getBitmap(targetImage);
@@ -245,7 +239,11 @@ export class Game {
         });
     }
 
-    private exampleClickSquare(grid: CanvasGrid, size: number, context: CanvasRenderingContext2D) {
+    private exampleClickSquare(
+        grid: CanvasGrid,
+        size: number,
+        context: CanvasRenderingContext2D
+    ) {
         const firstSquare = grid.square({ x: 0, y: 0 });
         this.clickAreas.addSquare("square_0-0", firstSquare, size, () => {
             const { x, y } = firstSquare;
@@ -266,17 +264,14 @@ export class Game {
 
         context.translate(200, 80); // translate to rectangle center
 
-
         // x = x + 0.5 * width
         // y = y + 0.5 * height
         context.rotate((Math.PI / 180) * 25); // rotate
         context.translate(-200, -80); // translate back
-
 
         // draw grey rect
         context.fillStyle = "#4D4E53";
         context.fillRect(150, 30, 100, 100);
         context.restore();
     }
-
 }
