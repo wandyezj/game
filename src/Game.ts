@@ -6,6 +6,8 @@ import { ImageLibrary } from "./ImageLibrary";
 import { CanvasGrid } from "./CanvasGrid";
 import { targetImage } from "./constants";
 import { CanvasPaint } from "./CanvasPaint";
+import { GameEngine } from "./GameEngine";
+import { runInThisContext } from "vm";
 
 export class Game {
     private width: number = 600;
@@ -15,6 +17,7 @@ export class Game {
 
     private paint: CanvasPaint;
     private grid: CanvasGrid;
+    private engine: GameEngine;
 
     constructor(
         private canvas: HTMLCanvasElement,
@@ -32,6 +35,7 @@ export class Game {
     setup() {
         this.grid = this.createGrid();
         this.registerSquareCallbacks(this.grid, this.context);
+        this.engine = new GameEngine(this.grid);
     }
 
     createGrid() {
@@ -60,23 +64,37 @@ export class Game {
         return new CanvasGrid(offsetX, offsetY, count, count, size, separation);
     }
 
+    // Update Tick
+    tick() {
+        console.log("tick")
+        this.draw();
+    }
+
     /**
      * called when the canvas needs to be drawn
      */
     draw() {
+        const context = this.context;
+
         // black out the canvas
-        this.context.fillStyle = "black";
-        this.context.fillRect(0, 0, this.width, this.height);
+        context.fillStyle = "black";
+        context.fillRect(0, 0, this.width, this.height);
 
-        // Draw all squares in the grid
-        this.context.fillStyle = "green";
-        this.grid.draw(this.context);
+        this.engine.draw(context);
 
-        this.paint.arrow(
-            this.grid.squareCenter({ x: 5, y: 6 }),
-            this.grid.squareSize / 1.3,
-            { circleColor: "pink", lightsOn: true }
-        );
+
+
+
+        // // Draw all squares in the grid
+        // this.context.fillStyle = "green";
+        // this.grid.draw(this.context);
+
+        // CanvasPaint.arrow(
+        //     this.context,
+        //     this.grid.squareCenter({ x: 5, y: 6 }),
+        //     this.grid.squareSize / 1.3,
+        //     { circleColor: "pink", lightsOn: true }
+        // );
     }
 
     private registerSquareCallbacks(
@@ -89,6 +107,7 @@ export class Game {
                 const area = grid.square({ x, y });
                 const squareSize = grid.squareSize;
                 const callback = () => {
+                    this.engine.moveArrowTo({x, y})
                     console.log(`${x} ${y}`);
                     const color = getRandomNamedColor();
                     console.log(color);
@@ -194,6 +213,7 @@ export class Game {
     }
 
     private exampleImageRotation(grid: CanvasGrid) {
+        const context = this.context;
         let { x, y } = grid.square({ x: 0, y: 0 });
         const image = this.library.getBitmap(targetImage);
         this.context.drawImage(image, x, y);
@@ -211,7 +231,7 @@ export class Game {
         const centerY = square.y + image.height / 2;
         const degrees = 45;
         this.context.save();
-        this.paint.rotate({ x: centerX, y: centerY }, degrees);
+        CanvasPaint.rotate(context, { x: centerX, y: centerY }, degrees);
         this.paint.image(image, square);
         this.context.restore();
 

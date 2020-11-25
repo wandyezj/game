@@ -14,6 +14,13 @@ document.body.onload = () => {
     start();
 };
 
+let gameRefreshInterval: any;
+
+
+async function gameTick(){
+    game.tick();
+}
+
 export async function start() {
     console.log("start");
     const canvas = document.getElementById("game") as HTMLCanvasElement;
@@ -25,6 +32,8 @@ export async function start() {
     game = new Game(canvas, library);
     game.setup();
     game.draw();
+
+    gameRefreshInterval = setInterval(gameTick, 1000);
 
     window.addEventListener("click", function (e) {
         // event reports general screen coordinates
@@ -48,4 +57,6 @@ export async function start() {
         //     console.log(`${x} ${y} not in 0 0 ${canvas.width} ${canvas.height}`);
         // }
     });
+
+
 }
