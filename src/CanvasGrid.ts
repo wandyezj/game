@@ -54,6 +54,15 @@ export class CanvasGrid {
         return this.squareCoordinates[coordinates.x][coordinates.y];
     }
 
+    squareCenter(coordinate: Coordinate): Coordinate {
+        const square = this.square(coordinate);
+        const offset = this.squareSize / 2;
+        return {
+            x: square.x + offset,
+            y: square.y + offset,
+        };
+    }
+
     /**
      * Canvas Coordinate to Square Coordinate
      * finds where the canvas coordinate hits a square coordinate

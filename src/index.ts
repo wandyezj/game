@@ -23,6 +23,7 @@ export async function start() {
 
     await library.load(targetImage);
     game = new Game(canvas, library);
+    game.setup();
     game.draw();
 
     window.addEventListener("click", function (e) {
