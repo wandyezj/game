@@ -1,13 +1,14 @@
 import { getRandomNamedColor } from "./utility/getRandomNamedColor";
 import { getRandomHexColor } from "./utility/getRandomHexColor";
-import { Coordinate } from "./Coordinate";
+import { Coordinate, coordinateAdd } from "./Coordinate";
 import { CanvasClick } from "./CanvasClick";
 import { ImageLibrary } from "./ImageLibrary";
 import { CanvasGrid } from "./CanvasGrid";
 import { targetImage } from "./constants";
 import { CanvasPaint } from "./CanvasPaint";
 import { GameEngine } from "./GameEngine";
-import { runInThisContext } from "vm";
+import { getRandomIndex } from "./utility/getRandomIndex";
+import { getRandomInteger } from "./utility/getRandomInteger";
 
 export class Game {
     private width: number = 600;
@@ -67,6 +68,19 @@ export class Game {
     // Update Tick
     tick() {
         console.log("tick");
+        const from = this.engine.getArrowPosition();
+
+        // need to adjust for boundary
+
+        const move = {
+            x: getRandomInteger(-1, 1),
+            y: getRandomInteger(-1, 1),
+        };
+
+        console.log(JSON.stringify(move));
+        const to = coordinateAdd(from, move);
+        this.engine.moveArrowTo(to);
+
         this.draw();
     }
 

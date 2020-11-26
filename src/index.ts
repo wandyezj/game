@@ -32,7 +32,7 @@ export async function start() {
     game.setup();
     game.draw();
 
-    gameRefreshInterval = setInterval(gameTick, 1000);
+    gameRefreshInterval = setInterval(gameTick, 500);
 
     window.addEventListener("click", function (e) {
         // event reports general screen coordinates

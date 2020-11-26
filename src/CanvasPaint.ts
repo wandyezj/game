@@ -84,6 +84,20 @@ export class CanvasPaint {
         }
     }
 
+    /**
+     * Draw a doughnut
+     * @param context
+     * @param values
+     */
+    doughnut(
+        context: CanvasRenderingContext2D,
+        center: Coordinate,
+        radius: number,
+        values: { value: number; color: string }[]
+    ) {
+        // Draw color based on percentage of whole
+    }
+
     imageAtPositionWithRotation(
         image: ImageBitmap,
         imageCenter: { x: number; y: number },
