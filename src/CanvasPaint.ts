@@ -68,20 +68,31 @@ export class CanvasPaint {
         radius: number,
         options: { color?: string; fill?: boolean } = {}
     ) {
-        const { color, fill } = options;
+        CanvasPaint.circularArc(context, center, radius, {
+            ...options,
+            startRadians: 0,
+            endRadians: Math.PI * 2,
+        });
+    }
 
-        context.beginPath();
-        context.ellipse(center.x, center.y, radius, radius, 0, 0, Math.PI * 2);
-        if (color) {
-            context.strokeStyle = color;
-            context.fillStyle = color;
-        }
+    static circularArc(context: CanvasRenderingContext2D,
+        center: Coordinate,
+        radius: number,
+        options: { color?: string; fill?: boolean, startRadians?: number, endRadians?: number } = {startRadians:0, endRadians: 0}) {
+            const { color, fill, startRadians, endRadians } = options;
 
-        if (fill) {
-            context.fill();
-        } else {
-            context.stroke();
-        }
+            context.beginPath();
+            context.ellipse(center.x, center.y, radius, radius, 0, startRadians, endRadians);
+            if (color) {
+                context.strokeStyle = color;
+                context.fillStyle = color;
+            }
+    
+            if (fill) {
+                context.fill();
+            } else {
+                context.stroke();
+            }
     }
 
     /**
@@ -89,13 +100,44 @@ export class CanvasPaint {
      * @param context
      * @param values
      */
-    doughnut(
+    static doughnut(
         context: CanvasRenderingContext2D,
         center: Coordinate,
         radius: number,
         values: { value: number; color: string }[]
     ) {
+        const total = values
+            .map(item => item.value)
+            .reduce((previous, current) => previous + current, 0);
+
+
+
+        //CanvasPaint.circle(context, center, radius, {color: ordered[0].color})
+        // Position so that it starts at the top and goes clockwise
+        let current = - Math.PI / 2;
+        values.forEach((value) => {
+
+            const percentage = value.value / total;
+            const color = value.color
+            const increase = percentage * 2 * Math.PI;
+            const previous = current;
+            current = previous + increase;
+
+            const startRadians = previous;
+            const endRadians = current;
+
+            //console.log(`${color} ${percentage} ${startRadians} ${endRadians}`);
+            context.lineWidth = 5;
+            CanvasPaint.circularArc(context, center, radius, {
+                color,
+                startRadians,
+                endRadians,
+            })
+        });
+        
+        // draw each percentage
         // Draw color based on percentage of whole
+        
     }
 
     imageAtPositionWithRotation(

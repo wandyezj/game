@@ -20,9 +20,8 @@ export class GamePieceArrow implements GamePiece {
         return PieceKind.Arrow;
     }
 
-    draw(context: CanvasRenderingContext2D): void {
+    draw(context: CanvasRenderingContext2D, center: Coordinate): void {
         if (this.show) {
-            const center = this.grid.squareCenter(this.coordinates);
             CanvasPaint.rotate(context, center, this.directionDegrees);
             CanvasPaint.arrow(context, center, this.grid.squareSize / 1.3, {
                 circleColor: this.color,

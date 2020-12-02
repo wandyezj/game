@@ -4,6 +4,11 @@ Turn based.
 Grid Based.
 
 Players plot all actions before they happen simultaneously.
+    - Simultaneous movement is preferable for multi player games as it allows all players to move at the same time.
+Players move sequentially taking turns.
+    - sequential movement like chess is much easier to understand and visualize.
+
+
 Actions are all planned before they take happen.
 
 An engagement
@@ -32,3 +37,43 @@ Range is how far the offense of a fleet can reach. If the range of one fleet is 
 Offense
 
 Defense
+
+
+## Technical
+
+Calculation and Visualization layers should have a hard separation.
+
+Action -> Animation
+
+
+Visualization should read a series of actions an display that animation of that sequence.
+
+Actual movement is on an infinite axis, this is then reduced to grid squares for the purpose of display.
+
+### Buttons
+
+States
+
+- normal
+- hover
+- click
+
+light up when hovered over, or have cross hatch pattern, draw a box around them, use the same design for all game buttons, can keep the same icon can simply adjust the background
+
+### Selector
+
+Same selector on screen around the object selected
+
+### Portraits
+
+Small picture for map
+Large picture to make it cool
+
+### Consistency
+
+Consistently order components or divide into groups?
+
+
+### Sub Screens
+
+Technically everything is a GamePiece including buttons, should game pieces be considered Board Pieces?

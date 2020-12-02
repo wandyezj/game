@@ -1,6 +1,7 @@
 import { CanvasGrid } from "./CanvasGrid";
+import { CanvasPaint } from "./CanvasPaint";
 import { Coordinate } from "./Coordinate";
-import { GamePiece } from "./GamePiece";
+import { GamePiece, PieceKind } from "./GamePiece";
 import { GamePieceArrow } from "./GamePieceArrow";
 
 /**
@@ -16,14 +17,16 @@ export class GameEngine {
     constructor(private grid: CanvasGrid) {
         const arrowOne = new GamePieceArrow(grid, "Chartreuse");
         const arrowTwo = new GamePieceArrow(grid, "Crimson");
-        const arrow = new GamePieceArrow(grid, "cyan");
+        const arrowThree = new GamePieceArrow(grid, "Cyan");
+        const arrow = new GamePieceArrow(grid, "Blue");
 
         this.arrows.set("one", arrowOne);
         this.arrows.set("two", arrowTwo);
+        this.arrows.set("three", arrowThree);
 
         this.arrow = arrow;
 
-        const allPieces = [arrow, arrowOne, arrowTwo];
+        const allPieces = [arrow, arrowOne, arrowTwo, arrowThree];
         this.pieces.push(...allPieces);
     }
 
@@ -65,11 +68,42 @@ export class GameEngine {
             for (let y = 0; y < column.length; y++) {
                 const pieces = column[y];
                 if (pieces) {
-                    pieces.forEach((piece) => {
-                        context.save();
-                        piece.draw(context);
-                        context.restore();
+                    // Might be convenient to have a special structure that stores pieces
+                    const arrows: GamePieceArrow[] = pieces.filter(x => x.kind === PieceKind.Arrow) as GamePieceArrow[];
+                    const others = pieces.filter(x => x.kind !== PieceKind.Arrow);
+                    const center = this.grid.squareCenter({x, y});
+
+                    others.forEach((piece) => {
+                        GameEngine.drawPiece(context,center, piece);
                     });
+
+                    if (arrows.length === 1) {
+                        GameEngine.drawPiece(context, center, arrows[0]);
+                    } else if (arrows.length > 1) {
+                        const colorCountMap: {[key: string]: number} = {};
+                        arrows.map(a => a.color).forEach((color) => {
+                            if (colorCountMap[color] === undefined) {
+                                colorCountMap[color] = 0;
+                            }
+                            colorCountMap[color] += 1;
+                        });
+                        
+
+
+                        const values = Object.getOwnPropertyNames(colorCountMap).map((color) => {
+                            return {color:color, value:colorCountMap[color]} 
+                        });
+
+                        // Order the values
+                        values.sort((a, b) => {
+                            return a.value - b.value;
+                        });
+
+                        // Draw circle thing instead
+                        CanvasPaint.doughnut(context, center, this.grid.squareSize /3, values);
+                    }
+
+   
 
                     // if multiple arrows of kind then do something else
                     // need to order the drawing layer
@@ -84,6 +118,12 @@ export class GameEngine {
         //     piece.draw(context);
         //     context.restore();
         // });
+    }
+
+    static drawPiece(context: CanvasRenderingContext2D, center: Coordinate, piece: GamePiece) {
+        context.save();
+        piece.draw(context, center);
+        context.restore();
     }
 
     moveArrowTo(to: Coordinate) {

@@ -16,8 +16,13 @@ document.body.onload = () => {
 
 let gameRefreshInterval: any;
 
+const maxTicks = 1000;
+let currentTicks = 0;
 async function gameTick() {
-    game.tick();
+    if (currentTicks < maxTicks) {
+        game.tick();
+    }
+    currentTicks++;
 }
 
 export async function start() {
