@@ -18,14 +18,13 @@ export class GameEngine {
     // technically not a game piece
     private select: GamePieceSelect;
 
-
     constructor(private grid: CanvasGrid) {
         const arrowOne = new GamePieceArrow(grid, "Chartreuse");
         const arrowTwo = new GamePieceArrow(grid, "Crimson");
         const arrowThree = new GamePieceArrow(grid, "Cyan");
         const arrow = new GamePieceArrow(grid, "Blue");
 
-        const select = new GamePieceSelect(grid)
+        const select = new GamePieceSelect(grid);
 
         this.arrows.set("one", arrowOne);
         this.arrows.set("two", arrowTwo);
@@ -78,30 +77,41 @@ export class GameEngine {
 
                 if (pieces) {
                     // Might be convenient to have a special structure that stores pieces
-                    const arrows: GamePieceArrow[] = pieces.filter(x => x.kind === GamePieceKind.Arrow) as GamePieceArrow[];
-                    const others = pieces.filter(x => x.kind !== GamePieceKind.Arrow);
-                    const center = this.grid.squareCenter({x, y});
+                    const arrows: GamePieceArrow[] = pieces.filter(
+                        (x) => x.kind === GamePieceKind.Arrow
+                    ) as GamePieceArrow[];
+                    const others = pieces.filter(
+                        (x) => x.kind !== GamePieceKind.Arrow
+                    );
+                    const center = this.grid.squareCenter({ x, y });
 
                     others.forEach((piece) => {
                         GameEngine.drawPiece(context, center, piece);
-                        console.log(`draw other ${x} ${y} ${GamePieceKind[piece.kind]}`)
+                        console.log(
+                            `draw other ${x} ${y} ${GamePieceKind[piece.kind]}`
+                        );
                     });
 
                     if (arrows.length === 1) {
                         GameEngine.drawPiece(context, center, arrows[0]);
                     } else if (arrows.length > 1) {
-                        const colorCountMap: {[key: string]: number} = {};
-                        arrows.map(a => a.color).forEach((color) => {
-                            if (colorCountMap[color] === undefined) {
-                                colorCountMap[color] = 0;
-                            }
-                            colorCountMap[color] += 1;
-                        });
-                        
+                        const colorCountMap: { [key: string]: number } = {};
+                        arrows
+                            .map((a) => a.color)
+                            .forEach((color) => {
+                                if (colorCountMap[color] === undefined) {
+                                    colorCountMap[color] = 0;
+                                }
+                                colorCountMap[color] += 1;
+                            });
 
-
-                        const values = Object.getOwnPropertyNames(colorCountMap).map((color) => {
-                            return {color:color, value:colorCountMap[color]} 
+                        const values = Object.getOwnPropertyNames(
+                            colorCountMap
+                        ).map((color) => {
+                            return {
+                                color: color,
+                                value: colorCountMap[color],
+                            };
                         });
 
                         // Order the values
@@ -110,10 +120,13 @@ export class GameEngine {
                         });
 
                         // Draw circle thing instead
-                        CanvasPaint.doughnut(context, center, this.grid.squareSize /3, values);
+                        CanvasPaint.doughnut(
+                            context,
+                            center,
+                            this.grid.squareSize / 3,
+                            values
+                        );
                     }
-
-   
 
                     // if multiple arrows of kind then do something else
                     // need to order the drawing layer
@@ -122,26 +135,27 @@ export class GameEngine {
                 }
             }
         }
-
     }
 
-    static drawPiece(context: CanvasRenderingContext2D, center: Coordinate, piece: GamePiece) {
+    static drawPiece(
+        context: CanvasRenderingContext2D,
+        center: Coordinate,
+        piece: GamePiece
+    ) {
         context.save();
         piece.draw(context, center);
         context.restore();
     }
 
     moveArrowTo(to: Coordinate) {
-        if (this.grid.contains(to)){
+        if (this.grid.contains(to)) {
             this.arrow.moveTo(to);
         }
     }
 
     clickSquare(to: Coordinate) {
         // Is to valid?
-        if (
-            this.grid.contains(to)
-        ) {
+        if (this.grid.contains(to)) {
             this.moveArrowTo(to);
             this.select.moveTo(to);
         } else {

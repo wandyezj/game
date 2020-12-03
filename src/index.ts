@@ -19,7 +19,7 @@ let gameRefreshInterval: any;
 /**
  * Interval between game ticks
  */
-const tickIntervalMilliseconds  = 500;
+const tickIntervalMilliseconds = 500;
 
 // Only have game proceed so many ticks
 const maxTicks = -1;

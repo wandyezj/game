@@ -76,24 +76,39 @@ export class CanvasPaint {
         });
     }
 
-    static circularArc(context: CanvasRenderingContext2D,
+    static circularArc(
+        context: CanvasRenderingContext2D,
         center: Coordinate,
         radius: number,
-        options: { color?: string; fill?: boolean, startRadians?: number, endRadians?: number } = {startRadians:0, endRadians: 0}) {
-            const { color, fill, startRadians, endRadians } = options;
+        options: {
+            color?: string;
+            fill?: boolean;
+            startRadians?: number;
+            endRadians?: number;
+        } = { startRadians: 0, endRadians: 0 }
+    ) {
+        const { color, fill, startRadians, endRadians } = options;
 
-            context.beginPath();
-            context.ellipse(center.x, center.y, radius, radius, 0, startRadians, endRadians);
-            if (color) {
-                context.strokeStyle = color;
-                context.fillStyle = color;
-            }
-    
-            if (fill) {
-                context.fill();
-            } else {
-                context.stroke();
-            }
+        context.beginPath();
+        context.ellipse(
+            center.x,
+            center.y,
+            radius,
+            radius,
+            0,
+            startRadians,
+            endRadians
+        );
+        if (color) {
+            context.strokeStyle = color;
+            context.fillStyle = color;
+        }
+
+        if (fill) {
+            context.fill();
+        } else {
+            context.stroke();
+        }
     }
 
     /**
@@ -108,18 +123,15 @@ export class CanvasPaint {
         values: { value: number; color: string }[]
     ) {
         const total = values
-            .map(item => item.value)
+            .map((item) => item.value)
             .reduce((previous, current) => previous + current, 0);
-
-
 
         //CanvasPaint.circle(context, center, radius, {color: ordered[0].color})
         // Position so that it starts at the top and goes clockwise
-        let current = - Math.PI / 2;
+        let current = -Math.PI / 2;
         values.forEach((value) => {
-
             const percentage = value.value / total;
-            const color = value.color
+            const color = value.color;
             const increase = percentage * 2 * Math.PI;
             const previous = current;
             current = previous + increase;
@@ -133,29 +145,33 @@ export class CanvasPaint {
                 color,
                 startRadians,
                 endRadians,
-            })
+            });
         });
-        
+
         // draw each percentage
         // Draw color based on percentage of whole
-        
     }
 
-    static square(context: CanvasRenderingContext2D, center: Coordinate, size: number, options: {
-        color?: string,
-    }= {}) {
-        const {color} = options;
+    static square(
+        context: CanvasRenderingContext2D,
+        center: Coordinate,
+        size: number,
+        options: {
+            color?: string;
+        } = {}
+    ) {
+        const { color } = options;
 
-        const offset = size / 2
+        const offset = size / 2;
         const x = center.x - offset;
         const y = center.y - offset;
 
         context.beginPath();
         if (color) {
-            context.strokeStyle = color
+            context.strokeStyle = color;
             context.lineWidth = 5;
         }
-        
+
         context.rect(x, y, size, size);
         context.stroke();
     }
