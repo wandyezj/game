@@ -39,6 +39,12 @@ Offense
 Defense
 
 
+Speed simplified concept of Newtonian movement.
+fleets have a maximum acceleration and maximum velocity. In order to change velocity they need to spend acceleration and fuel.
+This also means that a slower fleet can catch a faster fleet and fleets can dodge each other.
+
+Since fleets know where each other are they can automatically attempt to disengage, but they can be outmaneuvered and forced to engage.
+
 ## Technical
 
 Calculation and Visualization layers should have a hard separation.
@@ -77,3 +83,9 @@ Consistently order components or divide into groups?
 ### Sub Screens
 
 Technically everything is a GamePiece including buttons, should game pieces be considered Board Pieces?
+
+### Need Phases of Game Updates
+
+- calculate
+- draw
+- animate
