@@ -43,7 +43,18 @@ Speed simplified concept of Newtonian movement.
 fleets have a maximum acceleration and maximum velocity. In order to change velocity they need to spend acceleration and fuel.
 This also means that a slower fleet can catch a faster fleet and fleets can dodge each other.
 
+Strategic movement is different from tactical movement
+
 Since fleets know where each other are they can automatically attempt to disengage, but they can be outmaneuvered and forced to engage.
+
+This means fleets have a set of movement orders
+- move
+    - move to place
+- defend
+    - defend a specific point by engaging a fleet
+- chase
+- engage
+- disengage
 
 ## Technical
 
@@ -85,6 +96,12 @@ Consistently order components or divide into groups?
 Technically everything is a GamePiece including buttons, should game pieces be considered Board Pieces?
 
 ### Need Phases of Game Updates
+
+- store moves
+- block - block from doing any further action
+- apply moves
+- draw
+- unblock - allow further addition of stored moves
 
 - calculate
 - draw
