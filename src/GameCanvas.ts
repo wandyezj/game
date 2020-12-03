@@ -10,7 +10,7 @@ import { GameEngine } from "./GameEngine";
 import { getRandomIndex } from "./utility/getRandomIndex";
 import { getRandomInteger } from "./utility/getRandomInteger";
 
-export class Game {
+export class GameCanvas {
     private width: number = 600;
     private height: number = 600;
     private context: CanvasRenderingContext2D;
@@ -94,6 +94,7 @@ export class Game {
         context.fillStyle = "black";
         context.fillRect(0, 0, this.width, this.height);
 
+        // really should control drawing everything instead of being in the canvas
         this.engine.draw(context);
 
         // // Draw all squares in the grid

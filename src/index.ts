@@ -1,8 +1,8 @@
 import { ImageLibrary } from "./ImageLibrary";
-import { Game } from "./Game";
+import { GameCanvas } from "./GameCanvas";
 import { targetImage } from "./constants";
 
-let game: Game;
+let game: GameCanvas;
 let library = new ImageLibrary();
 
 document.onload = () => {
@@ -16,10 +16,16 @@ document.body.onload = () => {
 
 let gameRefreshInterval: any;
 
+/**
+ * Interval between game ticks
+ */
+const tickIntervalMilliseconds  = 500;
+
+// Only have game proceed so many ticks
 const maxTicks = 1000;
 let currentTicks = 0;
 async function gameTick() {
-    if (currentTicks < maxTicks) {
+    if (currentTicks < maxTicks || maxTicks < 0) {
         game.tick();
     }
     currentTicks++;
@@ -33,11 +39,11 @@ export async function start() {
     // const offsetY = rect.y;
 
     await library.load(targetImage);
-    game = new Game(canvas, library);
+    game = new GameCanvas(canvas, library);
     game.setup();
     game.draw();
 
-    gameRefreshInterval = setInterval(gameTick, 500);
+    gameRefreshInterval = setInterval(gameTick, tickIntervalMilliseconds);
 
     window.addEventListener("click", function (e) {
         // event reports general screen coordinates
