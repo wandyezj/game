@@ -1,3 +1,4 @@
+import { off } from "process";
 import { Coordinate } from "./Coordinate";
 import { degreesToRadians } from "./utility/degreesToRadians";
 
@@ -138,6 +139,25 @@ export class CanvasPaint {
         // draw each percentage
         // Draw color based on percentage of whole
         
+    }
+
+    static square(context: CanvasRenderingContext2D, center: Coordinate, size: number, options: {
+        color?: string,
+    }= {}) {
+        const {color} = options;
+
+        const offset = size / 2
+        const x = center.x - offset;
+        const y = center.y - offset;
+
+        context.beginPath();
+        if (color) {
+            context.strokeStyle = color
+            context.lineWidth = 5;
+        }
+        
+        context.rect(x, y, size, size);
+        context.stroke();
     }
 
     imageAtPositionWithRotation(

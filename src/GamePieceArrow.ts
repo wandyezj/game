@@ -6,7 +6,7 @@ import {
     coordinateDifference,
     coordinateEqual,
 } from "./Coordinate";
-import { GamePiece, PieceKind } from "./GamePiece";
+import { GamePiece, GamePieceKind } from "./GamePiece";
 import { radiansToDegrees } from "./utility/radiansToDegrees";
 
 export class GamePieceArrow implements GamePiece {
@@ -17,7 +17,7 @@ export class GamePieceArrow implements GamePiece {
     constructor(private grid: CanvasGrid, public readonly color: string) {}
 
     get kind() {
-        return PieceKind.Arrow;
+        return GamePieceKind.Arrow;
     }
 
     draw(context: CanvasRenderingContext2D, center: Coordinate): void {

@@ -1,8 +1,9 @@
 import { CanvasGrid } from "./CanvasGrid";
 import { CanvasPaint } from "./CanvasPaint";
 import { Coordinate } from "./Coordinate";
-import { GamePiece, PieceKind } from "./GamePiece";
+import { GamePiece, GamePieceKind } from "./GamePiece";
 import { GamePieceArrow } from "./GamePieceArrow";
+import { GamePieceSelect } from "./GamePieceSelect";
 
 /**
  * Class to manage the game,
@@ -14,19 +15,26 @@ export class GameEngine {
     private arrows = new Map<string, GamePieceArrow>();
     private pieces: GamePiece[] = [];
 
+    // technically not a game piece
+    private select: GamePieceSelect;
+
+
     constructor(private grid: CanvasGrid) {
         const arrowOne = new GamePieceArrow(grid, "Chartreuse");
         const arrowTwo = new GamePieceArrow(grid, "Crimson");
         const arrowThree = new GamePieceArrow(grid, "Cyan");
         const arrow = new GamePieceArrow(grid, "Blue");
 
+        const select = new GamePieceSelect(grid)
+
         this.arrows.set("one", arrowOne);
         this.arrows.set("two", arrowTwo);
         this.arrows.set("three", arrowThree);
 
         this.arrow = arrow;
+        this.select = select;
 
-        const allPieces = [arrow, arrowOne, arrowTwo, arrowThree];
+        const allPieces = [arrow, arrowOne, arrowTwo, arrowThree, select];
         this.pieces.push(...allPieces);
     }
 
@@ -67,14 +75,16 @@ export class GameEngine {
             const column = positions[x];
             for (let y = 0; y < column.length; y++) {
                 const pieces = column[y];
+
                 if (pieces) {
                     // Might be convenient to have a special structure that stores pieces
-                    const arrows: GamePieceArrow[] = pieces.filter(x => x.kind === PieceKind.Arrow) as GamePieceArrow[];
-                    const others = pieces.filter(x => x.kind !== PieceKind.Arrow);
+                    const arrows: GamePieceArrow[] = pieces.filter(x => x.kind === GamePieceKind.Arrow) as GamePieceArrow[];
+                    const others = pieces.filter(x => x.kind !== GamePieceKind.Arrow);
                     const center = this.grid.squareCenter({x, y});
 
                     others.forEach((piece) => {
-                        GameEngine.drawPiece(context,center, piece);
+                        GameEngine.drawPiece(context, center, piece);
+                        console.log(`draw other ${x} ${y} ${GamePieceKind[piece.kind]}`)
                     });
 
                     if (arrows.length === 1) {
@@ -113,11 +123,6 @@ export class GameEngine {
             }
         }
 
-        // this.pieces.forEach((piece) => {
-        //     context.save();
-        //     piece.draw(context);
-        //     context.restore();
-        // });
     }
 
     static drawPiece(context: CanvasRenderingContext2D, center: Coordinate, piece: GamePiece) {
@@ -127,14 +132,18 @@ export class GameEngine {
     }
 
     moveArrowTo(to: Coordinate) {
+        if (this.grid.contains(to)){
+            this.arrow.moveTo(to);
+        }
+    }
+
+    clickSquare(to: Coordinate) {
         // Is to valid?
         if (
-            to.x < this.grid.countX &&
-            to.y < this.grid.countY &&
-            to.x >= 0 &&
-            to.y >= 0
+            this.grid.contains(to)
         ) {
-            this.arrow.moveTo(to);
+            this.moveArrowTo(to);
+            this.select.moveTo(to);
         } else {
             console.log("Attempted to move outside");
         }

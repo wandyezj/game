@@ -9,6 +9,7 @@ import { CanvasPaint } from "./CanvasPaint";
 import { GameEngine } from "./GameEngine";
 import { getRandomIndex } from "./utility/getRandomIndex";
 import { getRandomInteger } from "./utility/getRandomInteger";
+import { GamePieceSelect } from "./GamePieceSelect";
 
 export class GameCanvas {
     private width: number = 600;
@@ -119,8 +120,10 @@ export class GameCanvas {
                 const area = grid.square({ x, y });
                 const squareSize = grid.squareSize;
                 const callback = () => {
-                    this.engine.moveArrowTo({ x, y });
-                    console.log(`${x} ${y}`);
+                    this.engine.clickSquare({ x, y });
+                    console.log(`Click Square ${x} ${y}`);
+
+                    // Color the Square
                     const color = getRandomNamedColor();
                     console.log(color);
                     context.fillStyle = color;

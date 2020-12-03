@@ -73,6 +73,15 @@ export class CanvasGrid {
         return undefined;
     }
 
+    contains(coordinate: Coordinate){
+        const {x, y} = coordinate;
+        const inside = x < this.countX &&
+            y < this.countY &&
+            x >= 0 &&
+            y >= 0
+        return inside;
+    }
+
     draw(context: CanvasRenderingContext2D) {
         this.squareCoordinates.forEach((column) => {
             column.forEach((square) => {
