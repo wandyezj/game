@@ -14,18 +14,16 @@ test("basic", () => {
     const center = grid.getSquareCenter(0);
     expect(center).toEqual({x:2.5, y: 2.5});
 
-    const tests: [Point, number | undefined][]  = [
-        [{x:2, y: 2}, 0],
-
-
+    const tests: [string, Point, number | undefined][]  = [
+        ["inside" ,{x:2, y: 2}, 0],
+        ["outside x left", {x:-1, y: 1}, undefined],
+        ["outside y top",{x:1, y: -1}, undefined],
+        ["outside x right", {x:9999, y:1}, undefined],
+        ["outside y bottom",{x:1, y:9999}, undefined],
     ];
 
-    tests.forEach(([point, expected]) => {
+    tests.forEach(([name, point, expected]) => {
         const actual = grid.getSquareIndexContainingPoint(point);
         expect(actual).toEqual(expected);
     });
-
-    const outsideSmall = grid.getSquareIndexContainingPoint({x:-1, y: -1});
-    expect(outsideSmall).toEqual(undefined);
-
 });
