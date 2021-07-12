@@ -8,7 +8,7 @@ import { Point } from "./Point";
  *
  * Represent a grid
  */
-class Grid {
+export class Grid {
     /**
      * Represents a grid of squares
      * Does not have boarders
@@ -64,4 +64,46 @@ class Grid {
 
     // Point in square
     // index square the point is in (what if the point is on the line) return undefined?
+    getSquareIndexContainingPoint(point: Point): number | undefined {
+        const offset = this.squareSize + this.lineSize;
+
+        const {x,y}= point;
+
+        // check if outside the grid
+        // over max x and y
+
+        // note: technically this offset is over but previous case handles collision outside
+        const minX = 0;
+        const minY = 0;
+
+        const maxX = offset * this.sizeX;
+        const maxY = offset * this.sizeY;
+
+        if (x < minX || y < minY) {
+            return undefined;
+        }
+
+        if (x > maxX || y > maxY) {
+            return undefined;
+        }
+
+        // check if outside a square
+        const squareX = x % offset;
+        const squareY = y % offset;
+
+        if (squareX > this.squareSize || squareY > this.squareSize) {
+            // Outside the square space
+            // On a line
+            return undefined;
+        }
+
+        // isolate to a square index
+
+        const indexX = (x - squareX) / offset;
+        const indexY = (y - squareY) / offset;
+
+        const index = indexY * this.sizeX + indexX
+
+        return index;
+    }
 }
