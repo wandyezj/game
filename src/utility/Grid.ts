@@ -1,30 +1,34 @@
 import { Point } from "./Point";
 
 /**
- *
- *
- *
- *
- *
- * Represent a grid
+ * Represent a grid of squares
+ * squares are separated from each other by a specified separation.
+ * squares are referred to by two systems
+ * coordinates (x,y) position of the square relative to other squares with 0,0 being the upper left square and {sizeX -1, sizeY -1} being the lower right square.
+ * index each square has a unique index which is index = y * sizeX + x
  */
 export class Grid {
+
     /**
      * Represents a grid of squares
      * Does not have boarders
      * @param sizeX number of squares on the x axis
      * @param sizeY number of squares on the y axis
-     * @param lineSize size of the line
+     * @param separation distance between squares
      */
     constructor(
         readonly sizeX: number,
         readonly sizeY: number,
         readonly squareSize: number,
-        readonly lineSize: number
+        readonly separation: number
     ) {}
 
+    getSquareCount(): number {
+        return this.sizeX * this.sizeY;
+    }
+
     /**
-     * squares are ordered from left to right, top down. Square zero is upper lef, highest square is lower right.
+     * squares are ordered from left to right, top down. Square zero is upper left, highest square is lower right.
      * @param index
      * @returns the x y index of the specified square
      */
@@ -36,6 +40,20 @@ export class Grid {
     }
 
     /**
+     * gets the index of the square based on it's x, y point
+     * @param point 
+     */
+    getSquareIndex(point: Point): number {
+        const{x,y} = point;
+        const index = y * this.sizeX + x;
+        if (index >= this.getSquareCount() ) {
+            throw new Error(`point (${x},${y}}) does not exist in grid.`);
+        }
+        
+        return index;
+    }
+
+    /**
      * Gets the upper left corner coordinates of the specified square
      * @param index
      * @returns
@@ -43,7 +61,7 @@ export class Grid {
     getSquareUpperLeftCorner(index: number): Point {
         const point = this.getSquareByIndex(index);
 
-        const offset = this.squareSize + this.lineSize;
+        const offset = this.squareSize + this.separation;
         const x = point.x * offset;
         const y = point.y * offset;
         return { x, y };
@@ -65,7 +83,7 @@ export class Grid {
     // Point in square
     // index square the point is in (what if the point is on the line) return undefined?
     getSquareIndexContainingPoint(point: Point): number | undefined {
-        const offset = this.squareSize + this.lineSize;
+        const offset = this.squareSize + this.separation;
 
         const {x,y}= point;
 
