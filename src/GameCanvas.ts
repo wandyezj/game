@@ -27,14 +27,16 @@ export class GameCanvas {
     ) {
         this.canvas.width = this.width;
         this.canvas.height = this.height;
-        this.context = this.canvas.getContext("2d");
+        const context = this.canvas.getContext("2d");
+        if (context === null) {
+            throw new Error("context is null");
+        }
+        this.context = context;
         this.paint = new CanvasPaint(this.context);
-    }
 
-    /**
-     * Things that should happen once
-     */
-    setup() {
+        /**
+         * Things that should happen once
+         */
         this.grid = this.createGrid();
         this.registerSquareCallbacks(this.grid, this.context);
         this.engine = new GameEngine(this.grid);

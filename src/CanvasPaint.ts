@@ -87,7 +87,11 @@ export class CanvasPaint {
             endRadians?: number;
         } = { startRadians: 0, endRadians: 0 }
     ) {
-        const { color, fill, startRadians, endRadians } = options;
+        const defaultOptions = { startRadians: 0, endRadians: 0 };
+        const { color, fill, startRadians, endRadians } = {
+            ...defaultOptions,
+            ...options,
+        };
 
         context.beginPath();
         context.ellipse(

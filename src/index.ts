@@ -40,7 +40,7 @@ export async function start() {
 
     await library.load(targetImage);
     game = new GameCanvas(canvas, library);
-    game.setup();
+    //game.setup();
     game.draw();
 
     gameRefreshInterval = setInterval(gameTick, tickIntervalMilliseconds);

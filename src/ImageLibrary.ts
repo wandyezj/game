@@ -13,19 +13,19 @@ export class ImageLibrary {
         this.bitmaps.set(src, bitmap);
     }
 
-    getBitmap(src: string) {
+    getBitmap(src: string): ImageBitmap {
         const image = this.bitmaps.get(src);
+        if (image === undefined) {
+            // or should return a default image
+            throw new Error(`Image not found: [${src}]`);
+        }
+
         return image;
-        // if (image) {
-        //     return image;
-        // }
-        // or should return a default image
-        //throw `Image not found: [${src}]`;
     }
 }
 
 async function loadImage(src: string): Promise<HTMLImageElement> {
-    let resolvePromise = undefined;
+    let resolvePromise: (image: HTMLImageElement) => void;
     const promise = new Promise<HTMLImageElement>((resolve) => {
         resolvePromise = resolve;
     });
