@@ -27,19 +27,22 @@ export class CanvasGrid2 {
         separation: number
     ) {
         this.grid = new Grid(countX, countY, squareSize, separation);
-        this.gridUpperLeft = {x: topLeftX, y: topLeftY};
-        
+        this.gridUpperLeft = { x: topLeftX, y: topLeftY };
+
         const squareCount = this.grid.getSquareCount();
-         for (let i = 0; i < squareCount; i++) {
+        for (let i = 0; i < squareCount; i++) {
             const upperLeft = this.grid.getSquareUpperLeftCorner(i);
-            const upperLeftWithOffset = addPoints(upperLeft, this.gridUpperLeft);
+            const upperLeftWithOffset = addPoints(
+                upperLeft,
+                this.gridUpperLeft
+            );
             this.squaresUpperLefts.push(upperLeftWithOffset);
         }
     }
 
     /**
      * Get all square in the grids upper left coordinates.
-     * @returns 
+     * @returns
      */
     public getAllSquareUpperLeft(): Coordinate[] {
         return this.squaresUpperLefts.flat(1);
@@ -55,8 +58,6 @@ export class CanvasGrid2 {
         const upperLeftCoordinate = addPoints(upperLeft, this.gridUpperLeft);
         return upperLeftCoordinate;
     }
-
-    
 
     squareCenter(coordinate: Coordinate): Coordinate {
         const square = this.square(coordinate);
@@ -84,7 +85,7 @@ export class CanvasGrid2 {
     }
 
     draw(context: CanvasRenderingContext2D) {
-        this.squaresUpperLefts.forEach(({x, y}) => {
+        this.squaresUpperLefts.forEach(({ x, y }) => {
             context.fillRect(x, y, this.squareSize, this.squareSize);
         });
     }

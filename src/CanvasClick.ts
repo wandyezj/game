@@ -4,7 +4,6 @@ type Callback = () => void;
 type InsideCoordinateCallback = (coordinate: Coordinate) => boolean;
 
 export class CanvasClick {
-
     /**
      * Order that the clicks are called in matters
      */

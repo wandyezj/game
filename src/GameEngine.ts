@@ -37,8 +37,8 @@ export class GameEngine {
         this.pieces.push(...allPieces);
     }
 
-    getPiecesAtPositions(): (GamePiece | undefined)[][][] {
-        const positions = [];
+    getPiecesAtPositions(): GamePiece[][][] {
+        const positions: GamePiece[][][] = [];
 
         // initialize with empty
         for (let x = 0; x < this.grid.countX; x++) {

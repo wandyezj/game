@@ -8,7 +8,6 @@ import { Point } from "./Point";
  * index each square has a unique index which is index = y * sizeX + x
  */
 export class Grid {
-
     /**
      * Represents a grid of squares
      * Does not have boarders
@@ -41,15 +40,15 @@ export class Grid {
 
     /**
      * gets the index of the square based on it's x, y point
-     * @param point 
+     * @param point
      */
     getSquareIndex(point: Point): number {
-        const{x,y} = point;
+        const { x, y } = point;
         const index = y * this.sizeX + x;
-        if (index >= this.getSquareCount() ) {
+        if (index >= this.getSquareCount()) {
             throw new Error(`point (${x},${y}}) does not exist in grid.`);
         }
-        
+
         return index;
     }
 
@@ -85,7 +84,7 @@ export class Grid {
     getSquareIndexContainingPoint(point: Point): number | undefined {
         const offset = this.squareSize + this.separation;
 
-        const {x,y}= point;
+        const { x, y } = point;
 
         // check if outside the grid
         // over max x and y
@@ -120,7 +119,7 @@ export class Grid {
         const indexX = (x - squareX) / offset;
         const indexY = (y - squareY) / offset;
 
-        const index = indexY * this.sizeX + indexX
+        const index = indexY * this.sizeX + indexX;
 
         return index;
     }

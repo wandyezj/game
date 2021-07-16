@@ -11,6 +11,7 @@
       "esModuleInterop": true,
       "inlineSourceMap": true,
       "inlineSources": true,
+      "strict": true,
       "lib": [
         "es2020",
         "dom"
