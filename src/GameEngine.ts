@@ -4,6 +4,7 @@ import { Coordinate } from "./Coordinate";
 import { GamePiece, GamePieceKind } from "./GamePiece";
 import { GamePieceArrow } from "./GamePieceArrow";
 import { GamePieceSelect } from "./GamePieceSelect";
+import { GamePieceTest } from "./GamePieceTest";
 
 /**
  * Class to manage the game,
@@ -19,10 +20,15 @@ export class GameEngine {
     private select: GamePieceSelect;
 
     constructor(private grid: CanvasGrid) {
+
+        // Piece for testing out drawings
+        const test = new GamePieceTest({x:5, y:5});
+
         const arrowOne = new GamePieceArrow(grid, "Chartreuse");
         const arrowTwo = new GamePieceArrow(grid, "Crimson");
         const arrowThree = new GamePieceArrow(grid, "Cyan");
         const arrow = new GamePieceArrow(grid, "Blue");
+        
 
         const select = new GamePieceSelect(grid);
 
@@ -33,7 +39,7 @@ export class GameEngine {
         this.arrow = arrow;
         this.select = select;
 
-        const allPieces = [arrow, arrowOne, arrowTwo, arrowThree, select];
+        const allPieces = [test, arrow, arrowOne, arrowTwo, arrowThree, select];
         this.pieces.push(...allPieces);
     }
 

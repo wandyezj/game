@@ -48,6 +48,7 @@ Strategic movement is different from tactical movement
 Since fleets know where each other are they can automatically attempt to disengage, but they can be outmaneuvered and forced to engage.
 
 This means fleets have a set of movement orders
+
 - move
     - move to place
 - defend
@@ -55,6 +56,68 @@ This means fleets have a set of movement orders
 - chase
 - engage
 - disengage
+
+## Movement
+
+- maximum velocity
+    - ships shielding can only protect a ship up to a specific velocity
+- velocity (meters/second)
+    = acceleration * seconds
+- maximum acceleration
+    - ships structure can only support up to a specific acceleration
+- acceleration (meters / second * second)
+    - = thrust / mass
+
+- mass (kilogram)
+    - ships mass depends on how much is on the ship
+- thrust (newtons 1 kilogram per meters/(second * second))
+    - Kilo Newtons thrust is the sum of all engines thrust
+
+Two types of movement:
+
+- Tactical - combat
+- Strategic - overall map
+
+## Components
+
+Components are a representation of ship systems. Each component gives the ship some capability. Disabling or destroying a component takes away that capability.
+
+- Control
+- Engines
+- Sensors
+- Supply
+- Cargo
+- Hull
+- Armor
+- Shields
+- Weapons
+
+## Combat Phases
+
+Combat executes in ticks
+
+Each tick has the following Phases
+
+- movement
+- actions
+    - fire weapons
+
+Actions can be readied to happen on some trigger such as:
+    - as soon as a ship is in range
+    - when a target reaches a certain threshold
+    - fired on
+
+Damage is then applied to all ships
+
+Ships move in terms of orders and act in terms of readied actions based on triggers.
+
+Orders
+    - ready action based on trigger
+    - move
+    - perform action
+    - repeat
+    - really every action is a combination of move and fire
+
 
 ## Technical
 

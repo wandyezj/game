@@ -22,7 +22,7 @@ let gameRefreshInterval: any;
 const tickIntervalMilliseconds = 500;
 
 // Only have game proceed so many ticks
-const maxTicks = -1;
+const maxTicks = 2;
 let currentTicks = 0;
 async function gameTick() {
     if (currentTicks < maxTicks || maxTicks < 0) {

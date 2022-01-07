@@ -176,6 +176,85 @@ export class CanvasPaint {
         context.stroke();
     }
 
+    static spiralArchimedean(context: CanvasRenderingContext2D, center: Coordinate) {
+        
+    }
+
+    static spiralFibonacci(context: CanvasRenderingContext2D, center: Coordinate) {
+
+        const scale  = 10;
+        let {x, y} = center;
+        let radius = 1;
+        const rotation = 0;
+        let angleStart = 3* (Math.PI * 2) /4;
+        let angleEnd = Math.PI * 2; 
+        const arcs = 9
+
+        context.beginPath();
+
+        // figure out centers
+        context.strokeStyle = "black"
+        context.lineWidth = 1;
+        
+        // graw ellipse
+        //context.ellipse(x, y, radius, radius, rotation, angleStart, angleEnd);
+
+        // fibonacci
+        let previous = 0
+        let current = 1
+
+        let offsetX = 0;
+        let offsetY = 0;
+
+        for (let i = 0; i < arcs; i++) {
+            
+            const radius = current * scale;
+            const delta = previous * scale;
+
+            angleStart = angleEnd;
+            angleEnd += Math.PI /2;
+
+            console.log(`(${offsetX}, ${offsetY}) ${radius} ${delta}`);
+            const centerX = x + offsetX;
+            const centerY = y + offsetY;
+
+            //CanvasPaint.circle(context, {x: centerX, y: centerY}, radius, {color: "pink"})
+            //context.lineTo(centerX, centerY);
+            context.ellipse(centerX, centerY, radius, radius, rotation, angleStart, angleEnd);
+            
+            
+            // direction is one of the following
+            const direction = i % 4
+
+            switch(direction) {
+                case 0:
+                    offsetY -= delta;
+                    break;
+                case 1:
+                    offsetX += delta;
+                    break;
+                case 2:
+                    offsetY += delta;
+                    break;
+                case 3:
+                    offsetX -= delta;
+                    break;
+            }
+
+            //drawArc(x,y, radius, 
+
+
+            // calculate next number in the fibonacci sequence
+            let next = previous + current;
+            previous = current;
+            current = next;
+
+
+        }
+
+        context.stroke();
+    }
+
     imageAtPositionWithRotation(
         image: ImageBitmap,
         imageCenter: { x: number; y: number },

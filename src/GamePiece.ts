@@ -9,4 +9,5 @@ export interface GamePiece {
 export enum GamePieceKind {
     Arrow,
     Select,
+    Test,
 }
